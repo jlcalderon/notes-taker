@@ -16,24 +16,23 @@ const port = process.PORT || 8080;
 /* const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html"); */
 
-
+//Set up the root directory of the serving files
+app.use(express.static("public"));
 // Sets up the app with express middleware functionalities to handle data parsing of requests/responses to JSON format
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-//Set up the root directory of the serving files
-app.use(express.static(__dirname + '/public'));
 
 //Define the user html routes
 
 /* Starting route to send users to the index.html */
 app.get("/", function(req, res) {
-    res.sendFile(path.join(__dirname, "/index.html"));
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 /* Serving the route to the notes.html file */
 app.get("/notes", function(req, res) {
-    res.sendFile(path.join(__dirname, "/public/notes.html"));
+    res.sendFile(path.join(__dirname, "public", "notes.html"));
 });
 
 //Define the API's endpoint routes by
