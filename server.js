@@ -57,6 +57,17 @@ app.get("/api/v1/notes", function(req, res) {
 
 });
 
+app.post("/api/v1/notes", function(req, res) {
+    let newNote = req.body;
+    let dbFile = fs.readFileSync(path.join(__dirname, "/db/db.json"), "utf8");
+    let dbFileJSON = JSON.parse(dbFile);
+    dbFileJSON.push(newNote);
+
+    fs.writeFileSync(path.join(__dirname, "/db/db.json"), JSON.stringify(dbFileJSON), "utf8");
+
+    return res.json(newNote);
+});
+
 //Starts the server
 app.listen(port, function() {
     console.log(`Note Taker Server listening on PORT: ${port} open the app here: http://localhost:${port}`);
