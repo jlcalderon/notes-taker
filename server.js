@@ -45,25 +45,33 @@ app.get("/notes", function(req, res) {
 
 app.get("/api/v1/notes", function(req, res) {
 
-    fs.readFile(path.join(__dirname, "/db/db.json"), "utf8", function(err, data) {
-        if (err) {
-            throw err;
-        }
-        const dbfile = JSON.parse(data);
-        console.log(dbfile);
-        res.json(dbfile);
-    });
+    const dbFile = fs.readFileSync(path.join(__dirname, "db","db.json" ), "utf8");
+    const dbFileJSON = JSON.parse(dbFile);
+    return res.json(dbFileJSON);
 
 });
 
 app.post("/api/v1/notes", function(req, res) {
+    //create the new note object from the request body
     let newNote = req.body;
+    
+    //Reads the JSON file asynchronous
     let dbFile = fs.readFileSync(path.join(__dirname, "/db/db.json"), "utf8");
+    
+    //Turn object into JSON format to work it out 
     let dbFileJSON = JSON.parse(dbFile);
+
+    //generate new unique id for the next note to add
+    let nextId = dbFileJSON.length + 1;
+    newNote.id = nextId;
+
+    //push the new note to the notes array
     dbFileJSON.push(newNote);
 
+    //Override the jsondb file with the new note pushed
     fs.writeFileSync(path.join(__dirname, "/db/db.json"), JSON.stringify(dbFileJSON), "utf8");
 
+    //return the new note added to the user
     return res.json(newNote);
 });
 
