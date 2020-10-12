@@ -8,7 +8,7 @@ const uuid = require('uuid');
 
 //initializing the app variable to create the routes and use express middleware
 const app = express();
-const PORT = process.PORT || 8080;
+const PORT = process.env.PORT || 8080;
 
 
 //Set up the root directory of the serving files
@@ -101,5 +101,5 @@ app.delete("/api/v1/notes/:id", function(req, res) {
 
 //Starts the server
 app.listen(PORT, function() {
-    console.log(`Note Taker Server listening on PORT: ${PORT} open the app here: http://localhost:${port}`);
+    console.log(`Note Taker Server listening on PORT: ${PORT} open the app here: http://localhost:${PORT}`);
 });
