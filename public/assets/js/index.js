@@ -1,3 +1,7 @@
+/* //importing path modules from node
+const path = require("path");
+//importing fs modules from node
+const fs = require("fs"); */
 const $noteTitle = $(".note-title");
 const $noteText = $(".note-textarea");
 const $saveNoteBtn = $(".save-note");
@@ -26,8 +30,9 @@ const saveNote = (note) => {
 
 // A function for deleting a note from the db
 const deleteNote = (id) => {
+    console.log(id);
     return $.ajax({
-        url: "api/v1/notes/" + id,
+        url: "/api/v1/notes/" + id,
         method: "DELETE",
     });
 };
@@ -67,13 +72,15 @@ const handleNoteDelete = function(event) {
     // prevents the click listener for the list from being called when the button inside of it is clicked
     event.stopPropagation();
 
-    const note = $(this).parent(".list-group-item").data();
-
-    if (activeNote.id === note.id) {
+    /* I WAS TRYING THIS -> const noteId = $(this).parent("id"); */
+    /* INSTEAD OF: */
+    const noteID = $(this).data("id");
+    console.log(noteID);
+    if (activeNote.id === noteID) {
         activeNote = {};
     }
 
-    deleteNote(note.id).then(() => {
+    deleteNote(noteID).then(() => {
         getAndRenderNotes();
         renderActiveNote();
     });
@@ -82,6 +89,7 @@ const handleNoteDelete = function(event) {
 // Sets the activeNote and displays it
 const handleNoteView = function() {
     activeNote = $(this).data();
+    console.log(activeNote);
     renderActiveNote();
 };
 
@@ -109,8 +117,9 @@ const renderNoteList = (notes) => {
 
     // Returns jquery object for li with given text and delete button
     // unless withDeleteButton argument is provided as false
-    const create$li = (text, withDeleteButton = true) => {
+    const create$li = (text, id, withDeleteButton = true) => {
         const $li = $("<li class='list-group-item'>");
+        $li.attr("data-id", id);
         const $span = $("<span>").text(text);
         $li.append($span);
 
@@ -118,6 +127,7 @@ const renderNoteList = (notes) => {
             const $delBtn = $(
                 "<i class='fas fa-trash-alt float-right text-danger delete-note'>"
             );
+            $delBtn.attr("data-id", id);
             $li.append($delBtn);
         }
         return $li;
@@ -128,7 +138,7 @@ const renderNoteList = (notes) => {
     }
 
     notes.forEach((note) => {
-        const $li = create$li(note.title).data(note);
+        const $li = create$li(note.title, note.id).data(note);
         noteListItems.push($li);
     });
 
